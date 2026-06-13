@@ -17,7 +17,7 @@ from pathlib import Path
 from app.pages.preferences import PreferencesPage
 from app.pages.project import ProjectPage
 from app.pages.templates import TemplatesPage
-from app.sidebar import Sidebar, SIDEBAR_WIDTH
+from app.sidebar import Sidebar
 from core import plugin_settings, templates_store
 from core.preferences import Preferences
 from core.project_generator import ProjectGenerator
@@ -39,28 +39,31 @@ class MainWindow(QMainWindow):
         self._refresh_generate_enabled()
 
     def _form_defaults(self) -> dict:
-        keys = ("manufacturer", "manufacturerCode", "pluginCode", "destination")
+        keys = (
+            "manufacturer", "manufacturerCode", "pluginCode", "destination",
+            "companyCopyright", "companyWebsite", "companyEmail",
+        )
         return {key: self._prefs.get(key) for key in keys}
 
     def _build_ui(self) -> None:
         central = QWidget()
-        root = QVBoxLayout(central)
-        root.setContentsMargins(0, 0, 0, 0)
-        root.setSpacing(0)
-        root.addLayout(self._build_body(), 1)
-        root.addWidget(self._build_bottom_bar())
-        self.setCentralWidget(central)
-
-    def _build_body(self) -> QHBoxLayout:
-        body = QHBoxLayout()
+        body = QHBoxLayout(central)
         body.setContentsMargins(0, 0, 0, 0)
         body.setSpacing(0)
         self._sidebar = Sidebar()
-        self._stack = self._build_stack()
-        self._sidebar.sectionChanged.connect(self._stack.setCurrentIndex)
+        self._sidebar.sectionChanged.connect(self._on_section_changed)
+        self._sidebar.openRequested.connect(self._on_open)
+        right = QVBoxLayout()
+        right.setContentsMargins(0, 0, 0, 0)
+        right.setSpacing(0)
+        right.addWidget(self._build_stack(), 1)
+        right.addWidget(self._build_bottom_bar())
         body.addWidget(self._sidebar)
-        body.addWidget(self._stack, 1)
-        return body
+        body.addLayout(right, 1)
+        self.setCentralWidget(central)
+
+    def _on_section_changed(self, index: int) -> None:
+        self._stack.setCurrentIndex(index)
 
     def _build_stack(self) -> QStackedWidget:
         stack = QStackedWidget()
@@ -71,22 +74,19 @@ class MainWindow(QMainWindow):
         stack.addWidget(self._prefs_page)
         stack.addWidget(self._templates_page)
         self._project_page.validityChanged.connect(self._refresh_generate_enabled)
+        self._stack = stack
         return stack
 
     def _build_bottom_bar(self) -> QWidget:
         bar = QWidget()
         bar.setObjectName("BottomBar")
         layout = QHBoxLayout(bar)
-        layout.setContentsMargins(0, 8, 16, 8)
+        layout.setContentsMargins(16, 8, 16, 8)
         layout.setSpacing(12)
-        self._open = QPushButton("Open Project…")
-        self._open.setFixedWidth(SIDEBAR_WIDTH)
-        self._open.clicked.connect(self._on_open)
         self._status = QLabel("")
         self._generate = QPushButton("Generate Project")
         self._generate.setObjectName("GenerateButton")
         self._generate.clicked.connect(self._on_generate)
-        layout.addWidget(self._open)
         layout.addWidget(self._status, 1)
         layout.addWidget(self._generate)
         return bar

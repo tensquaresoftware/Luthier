@@ -66,6 +66,7 @@ def build_stylesheet() -> str:
         border-radius: 4px;
         padding: 6px 8px;
         selection-background-color: {p.ACCENT};
+        selection-color: white;
     }}
     QLineEdit:focus, QPlainTextEdit:focus {{ border: 1px solid {p.ACCENT}; }}
     QLineEdit:read-only {{ color: {p.TEXT_DIM}; }}
@@ -148,6 +149,26 @@ def build_stylesheet() -> str:
     }}
     #GenerateButton:hover {{ background: {p.PRIMARY_HOVER}; }}
     #GenerateButton:disabled {{ background: {p.BG_DISABLED}; color: {p.TEXT_DIM}; }}
+
+    #OpenButton {{
+        background: {p.PRIMARY};
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 7px 16px;
+        font-weight: bold;
+    }}
+    #OpenButton:hover {{ background: {p.PRIMARY_HOVER}; }}
+
+    #SaveButton {{
+        background: {p.PRIMARY};
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 7px 16px;
+        font-weight: bold;
+    }}
+    #SaveButton:hover {{ background: {p.PRIMARY_HOVER}; }}
 
     #PageTitle {{ font-size: 18px; font-weight: bold; }}
     #SectionTitle {{

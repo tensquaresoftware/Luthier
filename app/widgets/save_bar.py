@@ -25,6 +25,7 @@ class SaveBar(QWidget):
         row.setContentsMargins(0, 8, 0, 0)
         self._status = QLabel("")
         button = QPushButton(label)
+        button.setObjectName("SaveButton")
         button.clicked.connect(self.saveRequested)
-        row.addWidget(self._status, 1)
         row.addWidget(button)
+        row.addWidget(self._status, 1)

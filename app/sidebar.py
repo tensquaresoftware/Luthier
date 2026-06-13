@@ -2,27 +2,35 @@
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtSvgWidgets import QSvgWidget
-from PySide6.QtWidgets import QListWidget, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QListWidget, QPushButton, QVBoxLayout, QWidget
 
 from app.resources import resource_path
 
 SECTIONS = ["Project", "Preferences", "Templates"]
 SIDEBAR_WIDTH = 190
-_LOGO_MARGIN = 28
+_LOGO_MARGIN = 12
 
 
 class Sidebar(QWidget):
     sectionChanged = Signal(int)
+    openRequested = Signal()
 
     def __init__(self):
         super().__init__()
         self.setObjectName("Sidebar")
         self.setFixedWidth(SIDEBAR_WIDTH)
         self._list = self._make_list()
+        self._open = QPushButton("Open Project…")
+        self._open.setObjectName("OpenButton")
+        self._open.clicked.connect(self.openRequested)
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(8, 12, 8, 12)
+        layout.setContentsMargins(8, 12, 8, 8)
+        layout.setSpacing(0)
         layout.addWidget(self._list, 1)
+        layout.addSpacing(12)
         layout.addWidget(self._make_logo(), 0, Qt.AlignHCenter)
+        layout.addSpacing(10)
+        layout.addWidget(self._open)
 
     def _make_list(self) -> QListWidget:
         widget = QListWidget()

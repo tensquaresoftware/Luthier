@@ -22,6 +22,15 @@ def _pref_specs(prefs: Preferences) -> list[FieldSpec]:
         FieldSpec("pluginCode", "Plugin code",
                   validation.validate_plugin_code,
                   default=prefs.get("pluginCode")),
+        FieldSpec("companyCopyright", "Copyright",
+                  validation.validate_optional,
+                  default=prefs.get("companyCopyright")),
+        FieldSpec("companyWebsite", "Website",
+                  validation.validate_optional,
+                  default=prefs.get("companyWebsite")),
+        FieldSpec("companyEmail", "E-mail",
+                  validation.validate_optional,
+                  default=prefs.get("companyEmail")),
         FieldSpec("destination", "Default destination",
                   validation.validate_destination,
                   default=prefs.get("destination")),
@@ -39,7 +48,7 @@ class PreferencesPage(QWidget):
         self._prefs = prefs
         self._form = ValidatedForm(_pref_specs(prefs))
         self._artefacts = ArtefactsSection(prefs)
-        self._bar = SaveBar("Save preferences")
+        self._bar = SaveBar("Save Preferences")
         self._bar.saveRequested.connect(self._on_save)
         self._build_ui()
 
