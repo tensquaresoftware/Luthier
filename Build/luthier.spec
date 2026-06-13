@@ -1,12 +1,8 @@
-# PyInstaller spec for Luthier (macOS .app). Build: pyinstaller build/luthier.spec
+# PyInstaller spec for Luthier. Build: pyinstaller Build/luthier.spec
 import os
 import sys
 
 PROJECT_ROOT = os.path.dirname(SPECPATH)
-sys.path.insert(0, PROJECT_ROOT)
-from core.generator_bridge import default_generator_root
-
-GEN = str(default_generator_root())
 
 _SKIP_DIRS = {"__pycache__", "Builds", ".git", ".cmake"}
 _SKIP_FILES = {".DS_Store"}
@@ -27,24 +23,14 @@ def collect_tree(src_root, dest_prefix):
 
 
 datas = (
-    collect_tree(os.path.join(GEN, "Generator"), "generator/Generator")
-    + collect_tree(os.path.join(GEN, "Templates"), "generator/Templates")
-    + [
-        (os.path.join(GEN, "generator-configuration.py"), "generator"),
-        (os.path.join(GEN, "project-configuration.cmake"), "generator"),
-        (os.path.join(PROJECT_ROOT, "resources", "luthier.svg"), "resources"),
-    ]
+    collect_tree(os.path.join(PROJECT_ROOT, "Templates"), "Templates")
+    + [(os.path.join(PROJECT_ROOT, "Resources", "luthier.svg"), "Resources")]
 )
-
-# The generator is loaded dynamically (importlib), so PyInstaller cannot see its
-# stdlib imports. Declare the ones Luthier itself does not import.
-_GENERATOR_HIDDEN = ["platform", "shutil", "importlib.util", "typing", "re", "pathlib"]
 
 a = Analysis(
     [os.path.join(PROJECT_ROOT, "main.py")],
     pathex=[PROJECT_ROOT],
     datas=datas,
-    hiddenimports=_GENERATOR_HIDDEN,
     noarchive=False,
 )
 _IS_MACOS = sys.platform == "darwin"
@@ -59,7 +45,7 @@ exe = EXE(
     console=False,
     argv_emulation=_IS_MACOS,
 )
-# COLLECT builds the one-folder distribution (dist/Luthier/) on every OS:
+# COLLECT builds the one-folder distribution (Dist/Luthier/) on every OS:
 # the Luthier executable plus its dependencies and bundled data. On Windows it
 # yields Luthier.exe, on Linux the Luthier binary. macOS additionally wraps it
 # into a .app. PyInstaller does not cross-compile: build on each target OS.

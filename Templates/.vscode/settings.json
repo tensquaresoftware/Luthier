@@ -1,0 +1,37 @@
+{{
+    "cmake.configureOnOpen": true,
+    "cmake.copyCompileCommands": "${{workspaceFolder}}/compile_commands.json",
+    "cmake.environment": {{
+        "JUCE_DIR": "${{env:JUCE_DIR}}"
+    }},
+    "cmake.configureSettings": {{
+        "JUCE_DIR": "${{env:JUCE_DIR}}"
+    }},
+    "cmake.configureEnvironment": {{
+        "JUCE_DIR": "${{env:JUCE_DIR}}"
+    }},
+    "cmake.enabledOutputParsers": [
+        "gcc",
+        "gnuld",
+        "msvc",
+        "ghs",
+        "diab",
+        "iwyu"
+    ],
+    "cmake.configureOnEdit": false,
+    "cmake.buildBeforeRun": true,
+    "cmake.saveBeforeBuild": true,
+    "cmake.clearOutputBeforeBuild": true,
+    
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "clangd.enable": false,
+    "files.associations": {{
+        "*.h": "cpp",
+        "*.cpp": "cpp"
+    }},
+    "files.exclude": {{
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/Builds": true
+    }}
+}}

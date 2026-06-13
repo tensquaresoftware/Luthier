@@ -18,7 +18,7 @@ def make_field_label(text: str) -> QLabel:
     label = QLabel(text)
     label.setObjectName("FieldLabel")
     label.setFixedWidth(_LABEL_WIDTH)
-    label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+    label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
     return label
 
 

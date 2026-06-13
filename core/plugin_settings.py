@@ -1,9 +1,9 @@
-"""Plugin type -> ProjectData flags.
+"""Plugin type flags, AU/VST3 categories and bundle identifier.
 
-Mirror of InputCollector._configurePluginSettings / _midiDefaultsForPluginType
-(those are private to the generator's CLI collector). AU/VST3 categories stay
-derived by the generator's own updateAuAndVst3Categories.
+Pure functions shared by the form, the project reader and the generator.
 """
+
+import re
 
 PLUGIN_TYPES = [
     ("synth", "Synthesizer"),
@@ -35,3 +35,19 @@ def type_for_flags(is_synth: str, is_midi_effect: str) -> str:
     if is_midi_effect == "TRUE":
         return "midi"
     return "effect"
+
+
+def bundle_id(manufacturer_name: str, project_name: str) -> str:
+    manufacturer = re.sub(r"[^a-zA-Z0-9]", "", manufacturer_name)
+    if manufacturer and not manufacturer[0].isalpha():
+        manufacturer = "Company" + manufacturer
+    project = re.sub(r"[^a-zA-Z0-9_-]", "", project_name)
+    return f"com.{manufacturer}.{project}"
+
+
+def au_and_vst3_categories(is_synth: str, is_midi_effect: str) -> tuple[str, str]:
+    if is_synth == "TRUE":
+        return "kAudioUnitType_MusicDevice", "Instrument|Synth"
+    if is_midi_effect == "TRUE":
+        return "kAudioUnitType_MIDIProcessor", "Fx|MIDI"
+    return "kAudioUnitType_Effect", "Fx"

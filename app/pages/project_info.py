@@ -3,7 +3,7 @@
 from typing import Callable
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QHBoxLayout, QLineEdit, QVBoxLayout, QWidget
 
 from app.widgets.validated_field import FieldSpec, make_field_label
 from app.widgets.validated_form import ValidatedForm
@@ -21,6 +21,12 @@ def _field_specs(defaults: dict) -> list[FieldSpec]:
         FieldSpec("manufacturerName", "Manufacturer",
                   validation.validate_manufacturer_name,
                   default=defaults.get("manufacturer", "")),
+        FieldSpec("companyCopyright", "Copyright",
+                  validation.validate_optional, placeholder="optional"),
+        FieldSpec("companyWebsite", "Website",
+                  validation.validate_optional, placeholder="optional"),
+        FieldSpec("companyEmail", "E-mail",
+                  validation.validate_optional, placeholder="optional"),
         FieldSpec("manufacturerCode", "Manufacturer code",
                   validation.validate_manufacturer_code,
                   default=defaults.get("manufacturerCode", "")),
@@ -61,14 +67,10 @@ class ProjectInfoPage(QWidget):
 
     def _build_ui(self) -> None:
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 20, 24, 20)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(2)
-        title = QLabel("Project Info")
-        title.setObjectName("PageTitle")
-        layout.addWidget(title)
         layout.addWidget(self._form)
         layout.addLayout(self._build_bundle_row())
-        layout.addStretch(1)
 
     def _build_bundle_row(self) -> QHBoxLayout:
         row = QHBoxLayout()

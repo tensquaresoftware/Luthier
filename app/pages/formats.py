@@ -31,11 +31,8 @@ class FormatsPage(QWidget):
 
     def _build_ui(self) -> None:
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 20, 24, 20)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(8)
-        title = QLabel("Formats")
-        title.setObjectName("PageTitle")
-        layout.addWidget(title)
         for name in _FORMATS:
             layout.addWidget(self._make_checkbox(name))
         self._hint = QLabel("Select at least one format.")

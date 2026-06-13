@@ -1,9 +1,7 @@
 """Pure field validators for the Luthier form.
 
-Self-contained mirror of the generator's input rules (InputCollector,
-pathValidation, uiConstants). Kept dependency-free so the form stays
-testable without importing the generator. Source of truth for the specs:
-Juce-Project-Generator/Generator.
+Self-contained and dependency-free so the form stays testable. The rules
+mirror JUCE's plugin identity constraints (4-char codes, ASCII-only paths).
 """
 
 import re
@@ -75,3 +73,7 @@ def validate_destination(value: str) -> ValidationResult:
 
 def validate_optional_path(value: str) -> ValidationResult:
     return _no_accents(value)
+
+
+def validate_optional(value: str) -> ValidationResult:
+    return _ok()

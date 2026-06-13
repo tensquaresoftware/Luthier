@@ -38,14 +38,10 @@ class PluginTypePage(QWidget):
 
     def _build_ui(self) -> None:
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 20, 24, 20)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(8)
-        title = QLabel("Plugin Type")
-        title.setObjectName("PageTitle")
-        layout.addWidget(title)
         for key, label in PLUGIN_TYPES:
             layout.addWidget(self._make_option(key, label))
-        layout.addStretch(1)
 
     def _make_option(self, key: str, label: str) -> QWidget:
         container = QWidget()

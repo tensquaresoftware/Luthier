@@ -1,0 +1,78 @@
+"""The single scrollable page gathering every per-project setting."""
+
+from typing import Callable
+
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QScrollArea, QVBoxLayout, QWidget
+
+from app.pages.artefacts import ArtefactsSection
+from app.pages.compilation import CompilationSection
+from app.pages.formats import FormatsPage
+from app.pages.plugin_type import PluginTypePage
+from app.pages.project_info import ProjectInfoPage
+from app.widgets.section import Section
+from core.preferences import Preferences
+
+
+class ProjectPage(QScrollArea):
+    """Scrollable composition of all project sections with aggregate validity."""
+
+    validityChanged = Signal(bool)
+
+    def __init__(self, defaults: dict, bundle_id_fn: Callable[[str, str], str], prefs: Preferences):
+        super().__init__()
+        self._info = ProjectInfoPage(defaults, bundle_id_fn)
+        self._type = PluginTypePage()
+        self._formats = FormatsPage()
+        self._compilation = CompilationSection()
+        self._artefacts = ArtefactsSection(prefs)
+        self._build_ui()
+        self._connect_signals()
+
+    def values(self) -> dict:
+        values = dict(self._info.values())
+        values["pluginType"] = self._type.selected_type()
+        values["pluginFormats"] = self._formats.value()
+        values.update(self._compilation.values())
+        return values
+
+    def config(self) -> dict:
+        return self._artefacts.values()
+
+    def is_valid(self) -> bool:
+        return self._info.is_valid() and self._formats.is_valid() and self._artefacts.is_valid()
+
+    def load(self, values: dict) -> None:
+        self._info.load(values)
+        self._type.set_type(values["pluginType"])
+        self._formats.set_formats(values["pluginFormats"])
+        self._compilation.load(values)
+        self._artefacts.load(values)
+
+    def _build_ui(self) -> None:
+        body = QWidget()
+        layout = QVBoxLayout(body)
+        layout.setContentsMargins(24, 20, 24, 20)
+        layout.setSpacing(18)
+        for title, widget in self._sections():
+            layout.addWidget(Section(title, widget))
+        layout.addStretch(1)
+        self.setWidget(body)
+        self.setWidgetResizable(True)
+
+    def _sections(self) -> list:
+        return [
+            ("Project Info", self._info),
+            ("Plugin Type", self._type),
+            ("Formats", self._formats),
+            ("Compilation", self._compilation),
+            ("Artefacts", self._artefacts),
+        ]
+
+    def _connect_signals(self) -> None:
+        self._info.validityChanged.connect(self._emit_validity)
+        self._formats.validityChanged.connect(self._emit_validity)
+        self._artefacts.validityChanged.connect(self._emit_validity)
+
+    def _emit_validity(self, _ok: bool = False) -> None:
+        self.validityChanged.emit(self.is_valid())

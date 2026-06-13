@@ -1,0 +1,54 @@
+# Build artifacts (platform-specific)
+Builds/
+*.o
+*.obj
+
+# IDE
+.vscode/.cmaketools.json
+.vscode/c_cpp_properties.json
+.idea/
+.DS_Store
+
+# Cache directories
+.cache/
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+DerivedData/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.vcxproj.user
+*.sln
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+install_manifest.txt
+Makefile
+
+# Binaries
+*.app
+*.component
+*.vst3
+*.exe
+*.dll
+*.dylib
+*.so
+*.a
+*.lib
+
+# Debug symbols
+*.pdb
+*.dSYM
+
+# Temporary files
+*.log
+*~
+*.bak
+*.swp

@@ -1,0 +1,71 @@
+{{
+    "version": "2.0.0",
+    "tasks": [
+        {{
+            "label": "Build: Standalone",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "${{command:cmake.buildDirectory}}",
+                "--target", "{projectName}_Standalone",
+                "--config", "${{command:cmake.buildType}}"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        }},
+        {{
+            "label": "Build: AU",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "${{command:cmake.buildDirectory}}",
+                "--target", "{projectName}_AU",
+                "--config", "${{command:cmake.buildType}}"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        }},
+        {{
+            "label": "Build: VST3",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "${{command:cmake.buildDirectory}}",
+                "--target", "{projectName}_VST3",
+                "--config", "${{command:cmake.buildType}}"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        }},
+        {{
+            "label": "Build: All",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "${{command:cmake.buildDirectory}}",
+                "--config", "${{command:cmake.buildType}}"
+            ],
+            "group": {{
+                "kind": "build",
+                "isDefault": true
+            }},
+            "problemMatcher": []
+        }},
+        {{
+            "label": "Clean",
+            "type": "shell",
+            "command": "rm",
+            "args": [
+                "-rf", "Builds"
+            ],
+            "windows": {{
+                "command": "powershell",
+                "args": [
+                    "-Command",
+                    "Remove-Item -Recurse -Force Builds -ErrorAction SilentlyContinue"
+                ]
+            }},
+            "group": "build"
+        }}
+    ]
+}}

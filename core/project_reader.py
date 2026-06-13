@@ -15,12 +15,18 @@ from core import plugin_settings
 _PROJECT_RE = re.compile(r"project\(\s*(\S+)\s+VERSION\s+([^\s)]+)")
 _FORMATS_RE = re.compile(r"set\(\s*PLUGIN_FORMATS_LIST\s+([^)]*)\)")
 _SET_RE = re.compile(r'set\s*\(\s*(\w+)\s+("(?:[^"\\]|\\.)*"|[^\s)]+)')
+_CXX_RE = re.compile(r"set\(\s*CMAKE_CXX_STANDARD\s+(\w+)\s*\)")
+_INCLUDE_RE = re.compile(r"target_include_directories\(\s*\S+\s+PRIVATE\s*(.*?)\)", re.DOTALL)
+_DEFS_RE = re.compile(r"target_compile_definitions\(\s*\S+\s+PUBLIC\s*(.*?)\)", re.DOTALL)
 
 _QUOTED_FIELDS = {
     "manufacturerName": "COMPANY_NAME",
     "manufacturerCode": "PLUGIN_MANUFACTURER_CODE",
     "pluginCode": "PLUGIN_CODE",
     "projectDisplayName": "PLUGIN_NAME",
+    "companyCopyright": "COMPANY_COPYRIGHT",
+    "companyWebsite": "COMPANY_WEBSITE",
+    "companyEmail": "COMPANY_EMAIL",
 }
 
 
@@ -45,9 +51,33 @@ def _parse_cmakelists(text: str) -> Optional[dict]:
         "projectVersion": project.group(2),
         "pluginFormats": _read_formats(text),
         "pluginType": _read_type(text),
+        "cxxStandard": _read_cxx(text),
+        "headerSearchPaths": _read_header_paths(text),
+        "preprocessorDefinitions": _read_preproc(text),
     }
     values.update(_quoted_fields(text))
     return values
+
+
+def _read_cxx(text: str) -> str:
+    match = _CXX_RE.search(text)
+    return match.group(1) if match else "17"
+
+
+def _read_header_paths(text: str) -> str:
+    match = _INCLUDE_RE.search(text)
+    return _block_lines(match.group(1)) if match else ""
+
+
+def _read_preproc(text: str) -> str:
+    for body in _DEFS_RE.findall(text):
+        if "JUCE_WEB_BROWSER" not in body:
+            return _block_lines(body)
+    return ""
+
+
+def _block_lines(body: str) -> str:
+    return "\n".join(line.strip() for line in body.splitlines() if line.strip())
 
 
 def _quoted_fields(text: str) -> dict:

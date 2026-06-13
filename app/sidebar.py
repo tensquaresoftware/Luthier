@@ -1,9 +1,14 @@
 """Left navigation panel switching between form sections."""
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtSvgWidgets import QSvgWidget
 from PySide6.QtWidgets import QListWidget, QVBoxLayout, QWidget
 
-SECTIONS = ["Project Info", "Plugin Type", "Formats", "Build Settings", "Preferences"]
+from app.resources import resource_path
+
+SECTIONS = ["Project", "Preferences", "Templates"]
+SIDEBAR_WIDTH = 190
+_LOGO_MARGIN = 28
 
 
 class Sidebar(QWidget):
@@ -12,11 +17,23 @@ class Sidebar(QWidget):
     def __init__(self):
         super().__init__()
         self.setObjectName("Sidebar")
-        self.setFixedWidth(190)
-        self._list = QListWidget()
-        self._list.addItems(SECTIONS)
-        self._list.setCurrentRow(0)
-        self._list.currentRowChanged.connect(self.sectionChanged)
+        self.setFixedWidth(SIDEBAR_WIDTH)
+        self._list = self._make_list()
         layout = QVBoxLayout(self)
         layout.setContentsMargins(8, 12, 8, 12)
-        layout.addWidget(self._list)
+        layout.addWidget(self._list, 1)
+        layout.addWidget(self._make_logo(), 0, Qt.AlignHCenter)
+
+    def _make_list(self) -> QListWidget:
+        widget = QListWidget()
+        widget.addItems(SECTIONS)
+        widget.setCurrentRow(0)
+        widget.currentRowChanged.connect(self.sectionChanged)
+        return widget
+
+    def _make_logo(self) -> QSvgWidget:
+        logo = QSvgWidget(resource_path("luthier.svg"))
+        size = logo.renderer().defaultSize()
+        width = SIDEBAR_WIDTH - _LOGO_MARGIN
+        logo.setFixedSize(width, round(size.height() * width / size.width()))
+        return logo

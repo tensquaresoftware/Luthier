@@ -1,0 +1,24 @@
+# Project AI Assistant Notes
+
+This is a JUCE audio plugin project built with CMake (no Projucer).
+
+## Layout
+
+- `Source/PluginProcessor.{h,cpp}` — the `juce::AudioProcessor` (DSP, state).
+- `Source/PluginEditor.{h,cpp}` — the `juce::AudioProcessorEditor` (GUI).
+- `CMakeLists.txt` — build configuration; add new `.cpp` files to `PLUGIN_SOURCES`.
+- `project-configuration.cmake` — where built plugins are copied after each build.
+- `CMakeUserPresets.json` — per-platform CMake presets.
+
+## Build
+
+JUCE is located via the `JUCE_DIR` environment variable (or a standard install
+path). Configure and build with the preset for your platform, for example
+`cmake --preset default-macos-arm64 && cmake --build --preset default-macos-arm64`.
+See `README.md` for the full per-platform instructions.
+
+## Conventions
+
+- Target the C++ standard set in `CMakeLists.txt` (`CMAKE_CXX_STANDARD`).
+- Keep the plugin classes named `PluginProcessor` / `PluginEditor`.
+- Refer to the JUCE 8 API: https://docs.juce.com

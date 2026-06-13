@@ -10,17 +10,15 @@ from app.theme import build_stylesheet
 
 
 def _self_check() -> int:
-    """Headless check that the (possibly bundled) generator loads."""
-    from core.generator_bridge import GeneratorBridge, default_generator_root
+    """Headless check that the bundled templates are reachable."""
+    from core.project_generator import ProjectGenerator, templates_dir
 
-    bridge = GeneratorBridge()
-    bridge.ensure_loaded()
+    generator = ProjectGenerator()
     print("frozen:", getattr(sys, "frozen", False))
     print("_MEIPASS:", getattr(sys, "_MEIPASS", None))
-    print("default_root:", default_generator_root())
-    print("bridge.root:", bridge.root, "exists:", bridge.root.exists())
-    print("is_loaded:", bridge.is_loaded, "load_error:", bridge.load_error)
-    return 0 if bridge.is_loaded else 1
+    print("templates_dir:", templates_dir(), "exists:", templates_dir().is_dir())
+    print("error:", generator.error)
+    return 0 if generator.error is None else 1
 
 
 def main() -> None:

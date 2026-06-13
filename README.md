@@ -2,24 +2,26 @@
 
 A Projucer-inspired desktop GUI for creating, reopening, and configuring CMake-based JUCE audio plugin projects.
 
-![Luthier](docs/luthier.png)
+![Luthier](Docs/Luthier.png)
 
-Luthier is a [PySide6](https://doc.qt.io/qtforpython/) front-end for a JUCE plugin **project generator**: fill a form, validate inline, and generate a ready-to-build CMake project (AU / VST3 / Standalone). It can also reopen an existing generated project to tweak and regenerate it, and stores your defaults (manufacturer, codes, paths, build settings) in a persistent preferences file — no more hand-editing configuration scripts.
+Luthier is a self-contained [PySide6](https://doc.qt.io/qtforpython/) desktop app that generates ready-to-build, CMake-based JUCE plugin projects (AU / VST3 / Standalone): fill a form, validate inline, and generate. It can also reopen an existing generated project to tweak and regenerate it, and stores your defaults in a persistent preferences file — no hand-editing of configuration scripts.
 
 ## Features
 
-- **Project Info** — technical/display names, version, manufacturer, plugin & manufacturer codes, auto-computed bundle ID, with live inline validation.
-- **Plugin Type** — Synthesizer, Audio Effect, or MIDI Effect (drives JUCE's `IS_SYNTH` / `IS_MIDI_EFFECT`, MIDI I/O, and AU/VST3 categories).
-- **Formats** — AU, VST3, Standalone.
-- **Build Settings** — copy to system plugin folders and/or a central artefacts directory (per OS).
-- **Preferences** — persistent defaults stored as JSON in the OS configuration directory, replacing manual edits to the generator's configuration.
+- **Project** — one scrollable page for the whole plugin:
+  - identity: technical/display names, version, manufacturer, copyright, website, e-mail, plugin & manufacturer codes, auto-computed bundle ID, with live inline validation;
+  - plugin type (Synthesizer, Audio Effect, MIDI Effect) and formats (AU, VST3, Standalone);
+  - compilation: C++ standard, preprocessor definitions, header search paths;
+  - artefacts: copy to system plugin folders and/or a central per-OS directory.
+- **Preferences** — persistent defaults (identity + default artefact settings) stored as JSON in the OS configuration directory.
+- **Templates** — view, edit, replace, or reset the C++ source templates (`PluginProcessor` / `PluginEditor`) used for new projects; overrides persist on disk.
 - **Reopen a project** — read an existing generated project back into the form and regenerate it in place.
 
 ## Requirements
 
 - Python 3.11+
 - PySide6 (`pip install -r requirements.txt`)
-- A JUCE plugin project generator (the CMake templates Luthier drives). Luthier wraps a separate Python generator; in development it expects it at a configurable path (see `core/generator_bridge.py`), and packaged builds bundle a copy.
+- No external dependencies beyond PySide6: the CMake project templates ship inside Luthier (`Templates/`) and the generation engine is built in (`core/`).
 
 ## Run from source
 
@@ -29,7 +31,7 @@ python -m venv .venv
 .venv/bin/python main.py
 ```
 
-Check that the generator is reachable (headless):
+Check that the bundled templates are reachable (headless):
 
 ```bash
 .venv/bin/python main.py --check
@@ -37,24 +39,24 @@ Check that the generator is reachable (headless):
 
 ## Build a standalone app
 
-PyInstaller bundles the generator, its templates, and the resources into a
-self-contained app. It does not cross-compile — build on each target OS.
+PyInstaller bundles the templates and resources into a self-contained app.
+It does not cross-compile — build on each target OS.
 
 ```bash
 .venv/bin/pip install -r requirements-dev.txt
-.venv/bin/pyinstaller build/luthier.spec --noconfirm --distpath dist --workpath build
+.venv/bin/pyinstaller Build/luthier.spec --noconfirm --distpath Dist --workpath Build
 ```
 
-The same `build/luthier.spec` works on all platforms:
+The same `Build/luthier.spec` works on all platforms:
 
 | OS      | Output                       |
 | ------- | ---------------------------- |
-| macOS   | `dist/Luthier.app`           |
-| Windows | `dist/Luthier/Luthier.exe`   |
-| Linux   | `dist/Luthier/Luthier`       |
+| macOS   | `Dist/Luthier.app`           |
+| Windows | `Dist/Luthier/Luthier.exe`   |
+| Linux   | `Dist/Luthier/Luthier`       |
 
 On Windows, activate the virtual environment with `.venv\Scripts\activate` and
-run `pyinstaller build\luthier.spec`.
+run `pyinstaller Build\luthier.spec`.
 
 ## License
 

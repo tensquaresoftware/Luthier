@@ -6,10 +6,9 @@ from pathlib import Path
 from PySide6.QtCore import QStandardPaths
 
 _DEFAULTS = {
-    "generatorRoot": "",
-    "manufacturer": "",
-    "manufacturerCode": "",
-    "pluginCode": "",
+    "manufacturer": "My Company",
+    "manufacturerCode": "Myco",
+    "pluginCode": "Mypl",
     "destination": "",
     "juceDir": "",
     "artefactsDirWindows": "",
@@ -40,9 +39,6 @@ class Preferences:
         location = QStandardPaths.StandardLocation.AppConfigLocation
         base = QStandardPaths.writableLocation(location)
         return Path(base) / "preferences.json"
-
-    def file_exists(self) -> bool:
-        return self._path.exists()
 
     def load(self) -> None:
         if self._path.exists():
